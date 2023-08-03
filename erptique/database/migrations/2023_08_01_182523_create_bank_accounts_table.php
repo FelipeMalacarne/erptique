@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('account_id', 50)->primary();
             $table->string('bank_id', 50);
             $table->string('account_type', 50);
-            $table->string('currency', 5);
             $table->timestamps();
         });
     }

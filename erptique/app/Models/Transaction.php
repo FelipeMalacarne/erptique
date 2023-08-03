@@ -5,27 +5,35 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BankAccount extends Model
+class Transaction extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'account_id',
-        'bank_id',
-        'account_type'
+        'transaction_type',
+        'date_posted',
+        'amount',
+        'FITID',
+        'ref_Number',
+        'memo',
+        'bank_account_id'
     ];
 
-    public function transactions()
+    public function bankAccount()
     {
-        return $this->hasMany(Transaction::class, 'account_id', 'account_id');
+        return $this->belongsTo(BankAccount::class, 'account_id', 'account_id');
     }
 
     public static function firstOrCreate(array $attributes, array $values = [])
     {
         $instance = static::where($attributes)->first();
+
         if (!$instance) {
             $instance = static::create(array_merge($attributes, $values));
         }
+
         return $instance;
     }
+
+
 }

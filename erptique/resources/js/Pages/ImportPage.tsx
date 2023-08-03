@@ -1,27 +1,26 @@
 import {PageProps} from "@/types";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router } from "@inertiajs/react";
+import {Head, useForm} from "@inertiajs/react";
 import {useState} from "react";
+import PrimaryButton from "@/Components/PrimaryButton";
+
 
 export default function ImportPage ({ auth }: PageProps) {
-    const [fileUpload, setFileUpload] = useState<File | null>(null);
-    const [fileUploadError, setFileUploadError] = useState<string | null>(null);
-    const [fileUploadLoading, setFileUploadLoading] = useState<boolean>(false);
 
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
-        if (files) {
-            const file = files[0];
-            // 'File must have the .ofx extension'
-            if(!file.name.endsWith('.ofx')) {
-                setFileUploadError('File must be of type .ofx');
-                setFileUpload(null)
-            } else {
-                setFileUploadError(null);
-                setFileUpload(file);
-                console.log(file);
-            }
+    const { data, setData, post, errors, processing, reset } = useForm({
+        fileUpload: null as File | null,
+    })
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if(e.target.files !== null && e.target.files.length > 0) {
+            setData('fileUpload', e.target.files[0])
         }
+    }
+
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        // @ts-ignore
+        post('/api/import-ofx')
     }
 
 
@@ -33,39 +32,30 @@ export default function ImportPage ({ auth }: PageProps) {
             <Head title="Import File" />
 
             <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <form className="max-w-7xl mx-auto sm:px-6 lg:px-8"
+                    onSubmit={submit}
+                      encType={'multipart/form-data'}
+                >
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-3">
                         {/*<div className="p-6 text-gray-900">You're logged in!</div>*/}
-                        <input type="file" onChange={(e) => handleFileUpload(e)} />
+                        <input type="file" onChange={handleFileUpload} />
                     </div>
                     <div className={'bg-white overflow-hidden shadow-sm sm:rounded-lg'}>
-                        { fileUploadError && <div className={'p-6 text-red-500'}>{fileUploadError}</div> }
-                        { fileUpload && <div className={'p-6 text-gray-900'}>{fileUpload.name}</div> }
+                        { errors.fileUpload && <div className={'p-6 text-red-500'}>{errors.fileUpload}</div> }
+                        { data.fileUpload && <div className={'p-6 text-gray-900'}>{data.fileUpload.name}</div> }
                     </div>
                     {/*submit*/}
                     <div className={'bg-white overflow-hidden shadow-sm sm:rounded-lg'}>
-                        <button
+                        <PrimaryButton
                             className={'p-6 text-gray-900'}
-                            onClick={() => {
-                                setFileUploadLoading(true);
-                                const formData = new FormData();
-                                formData.append('file', fileUpload as File);
-                                router.post('/import', formData, {
-                                    headers: {
-                                        'Content-Type': 'multipart/form-data'
-                                    }
-                                })
-
-                            }
-                            }
+                            onClick={() => {console.log(data.fileUpload)}}
+                            disabled={processing}
                         >
-
-
-                            {fileUploadLoading ? 'Loading...' : 'Submit'}
-                        </button>
+                            {processing ? 'Loading...' : 'Submit'}
+                        </PrimaryButton>
 
                     </div>
-                </div>
+                </form>
             </div>
         </AuthenticatedLayout>
     );
