@@ -18,7 +18,6 @@ return new class extends Migration
             $table->dateTime('date_posted');
             $table->decimal('amount', 18, 2);
             $table->string('FITID', 50);
-            $table->string('ref_Number', 50)->nullable();
             $table->string('memo', 255);
             $table->timestamps();
 

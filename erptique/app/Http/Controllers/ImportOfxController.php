@@ -28,7 +28,7 @@ class ImportOfxController extends Controller
 
         foreach ($ofx->bankAccounts[0]->statement->transactions as $transaction) {
 
-            // Check if a transaction with the same FITID already exists
+            // Check if a transaction with the same FITID ---todo-- on the same bank account already exists
             $existingTransaction = Transaction::where('FITID', $transaction->uniqueId)->first();
 
             // If no existing transaction found, create a new one
@@ -38,7 +38,6 @@ class ImportOfxController extends Controller
                     'date_posted' => $transaction->date,
                     'amount' => $transaction->amount,
                     'FITID' => $transaction->uniqueId,
-                    'ref_Number' => $transaction->checkNumber,
                     'memo' => $transaction->memo,
                 ]);
             }
