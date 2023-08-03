@@ -20,6 +20,11 @@ class BankAccount extends Model
         return $this->hasMany(Transaction::class, 'account_id', 'account_id');
     }
 
+    public function ledgerBalance()
+    {
+        return $this->hasOne(LedgerBalance::class, 'account_id', 'account_id');
+    }
+
     public static function firstOrCreate(array $attributes, array $values = [])
     {
         $instance = static::where($attributes)->first();

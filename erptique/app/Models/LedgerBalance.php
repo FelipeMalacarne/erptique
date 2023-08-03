@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class LedgerBalance extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'balance_amount',
+        'date_as_of'
+    ];
 }

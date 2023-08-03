@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ledger_balances', function (Blueprint $table) {
             $table->string('account_id', 50)->primary();
-            $table->decimal('balance_amount', 18, 2);
+            $table->string('balance_amount', 50);
             $table->dateTime('date_as_of');
             $table->timestamps();
 

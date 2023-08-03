@@ -28,13 +28,13 @@ class ImportOfxController extends Controller
 
         foreach ($ofx->bankAccounts[0]->statement->transactions as $transaction) {
 
-            // Check if a transaction with the same FITID ---todo-- on the same bank account already exists
-            $existingTransaction = Transaction::where('FITID', $transaction->uniqueId)->first();
+            // Convert the transaction type to "credit" or "debit"
+            $standardizedType = $this->getStandardizedTransactionType($transaction->type);
 
-            // If no existing transaction found, create a new one
+            $existingTransaction = Transaction::where('FITID', $transaction->uniqueId)->first();
             if (!$existingTransaction) {
                 $bankAccount->transactions()->create([
-                    'transaction_type' => $transaction->type,
+                    'transaction_type' => $standardizedType,
                     'date_posted' => $transaction->date,
                     'amount' => $transaction->amount,
                     'FITID' => $transaction->uniqueId,
@@ -42,6 +42,16 @@ class ImportOfxController extends Controller
                 ]);
             }
         }
+        // update or create account ledger_balance if balance is newer than the one in the database
+        $previousDate = $bankAccount->ledgerBalance()->value('date_as_of') ;
+        $newDate = $ofx->bankAccounts[0]->balanceDate;
+         if($previousDate < $newDate){
+             $bankAccount->ledgerBalance()->updateOrCreate([
+                 'date_as_of' => $ofx->bankAccounts[0]->balanceDate,
+                 'balance_amount' => $ofx->bankAccounts[0]->balance,
+             ]);
+         }
+
 //          return redirect()->route('dashboard');
     }
 
@@ -82,9 +92,29 @@ class ImportOfxController extends Controller
         }
     }
 
+    private function getStandardizedTransactionType($originalType)
+    {
+        $creditKeywords = ['credit', 'in'];
+        $debitKeywords = ['debit', 'out'];
+
+        foreach ($creditKeywords as $keyword) {
+            if (stripos($originalType, $keyword) !== false) {
+                return 'credit';
+            }
+        }
+
+        foreach ($debitKeywords as $keyword) {
+            if (stripos($originalType, $keyword) !== false) {
+                return 'debit';
+            }
+        }
+
+        // If no match is found, return the original type
+        return $originalType;
+    }
+
 
 
 
 }
-
 
