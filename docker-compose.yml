@@ -2,11 +2,12 @@ version: '3'
 services:
     laravel:
         build:
-            context: ./vendor/laravel/sail/runtimes/8.2
+            context: .
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: sail-8.2/app
+        image: erptique-sail
+        restart: unless-stopped
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -23,10 +24,13 @@ services:
         networks:
             - sail
         depends_on:
+            - builder.composer
+            - builder.npm
             - mysql
             - redis
     mysql:
         image: 'mysql/mysql-server:8.0'
+        restart: unless-stopped
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ROOT_HOST: '%'
@@ -47,8 +51,11 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
+        depends_on:
+            - builder.composer
     redis:
         image: 'redis:alpine'
+        restart: unless-stopped
         ports:
             - '${FORWARD_REDIS_PORT:-6379}:6379'
         volumes:
@@ -62,6 +69,18 @@ services:
                 - ping
             retries: 3
             timeout: 5s
+    builder.composer:
+        image: composer:2.5.8
+        working_dir: /var/www/html
+        volumes:
+            - '.:/var/www/html'
+        command: composer install
+    builder.npm:
+        image: node:18-alpine
+        working_dir: /var/www/html
+        volumes:
+            - '.:/var/www/html'
+        command: sh -c 'npm install; npm run build'
 networks:
     sail:
         driver: bridge
