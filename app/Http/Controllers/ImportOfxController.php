@@ -19,51 +19,52 @@ class ImportOfxController extends Controller
     {
 
         try {
-            $file = $request->file('fileUpload');
+            $files = $request->file('fileUpload');
 
-            if ($file == null) throw new Exception('No file uploaded');
-
-            $extension = $file->getClientOriginalExtension();
-
-            if ($extension != 'ofx') throw new Exception('File format not supported');
-
-            $fileString = $file->get();
-
-            // Parse the OFX date in the file string, if return null does nothing.
-            $fileString = $this->parseOfxDateInFileString($fileString) == null ? $fileString : $this->parseOfxDateInFileString($fileString);
-
-            $ofxParser = new Parser();
-            $ofx = $ofxParser->loadFromString($fileString);
-
-            $bankAccount = $this->getOrCreateBankAccount($ofx);
-
-            foreach ($ofx->bankAccounts[0]->statement->transactions as $transaction) {
-                // Convert the transaction type to "credit" or "debit"
-                $standardizedType = $this->getStandardizedTransactionType($transaction->type);
-
-                $existingTransaction = Transaction::where('FITID', $transaction->uniqueId)->first();
-                if (!$existingTransaction) {
-                    $bankAccount->transactions()->create([
-                        'transaction_type' => $standardizedType,
-                        'date_posted' => $transaction->date,
-                        'amount' => $transaction->amount,
-                        'FITID' => $transaction->uniqueId,
-                        'memo' => $transaction->memo,
-                    ]);
-                }
+            if (empty($files)) {
+                throw new Exception('No files uploaded');
             }
-            // update or create account ledger_balance if balance is newer than the one in the database
-            $bankAccount->updateOrCreate(
-                ['account_id' => $ofx->bankAccounts[0]->accountNumber],
-                ['ledger_balance' => $ofx->bankAccounts[0]->balance]
-            );
 
-            
+            foreach ($files as $file) {
+                $extension = $file->getClientOriginalExtension();
 
+                if ($extension != 'ofx') {
+                    throw new Exception('File format not supported');
+                }
+
+                $fileString = $file->get();
+
+                // Parse the OFX date in the file string, if return null does nothing.
+                $fileString = $this->parseOfxDateInFileString($fileString) == null ? $fileString : $this->parseOfxDateInFileString($fileString);
+
+                $ofxParser = new Parser();
+                $ofx = $ofxParser->loadFromString($fileString);
+
+                $bankAccount = $this->getOrCreateBankAccount($ofx);
+
+                foreach ($ofx->bankAccounts[0]->statement->transactions as $transaction) {
+                    // Convert the transaction type to "credit" or "debit"
+                    $standardizedType = $this->getStandardizedTransactionType($transaction->type);
+
+                    $existingTransaction = Transaction::where('FITID', $transaction->uniqueId)->first();
+                    if (!$existingTransaction) {
+                        $bankAccount->transactions()->create([
+                            'transaction_type' => $standardizedType,
+                            'date_posted' => $transaction->date,
+                            'amount' => $transaction->amount,
+                            'FITID' => $transaction->uniqueId,
+                            'memo' => $transaction->memo,
+                        ]);
+                    }
+                }
+                // update or create account ledger_balance
+                $bankAccount->updateOrCreate(
+                    ['account_id' => $ofx->bankAccounts[0]->accountNumber],
+                    ['ledger_balance' => $ofx->bankAccounts[0]->balance]
+                );
+            }
 
             Log::info('OFX file imported successfully.');
-
-
             return redirect()->back()->with('success', 'OFX file imported successfully.');
         } catch (Exception $e) {
             Log::error('Error importing OFX file: ' . $e->getMessage());
@@ -71,7 +72,7 @@ class ImportOfxController extends Controller
         }
     }
 
-    private function getOrCreateBankAccount($ofx) : BankAccount
+    private function getOrCreateBankAccount($ofx): BankAccount
     {
         return BankAccount::firstOrCreate([
             'account_id' => $ofx->bankAccounts[0]->accountNumber,

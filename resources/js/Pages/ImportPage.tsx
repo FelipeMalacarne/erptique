@@ -8,15 +8,16 @@ import axios from "axios";
 export default function ImportPage ({ auth,  }: PageProps) {
 
     const { data, setData, post, errors, processing, reset }: any = useForm({
-        fileUpload: null as File | null,
+        fileUpload: null as FileList | null,
     })
 
     const [showSuccessMessage, setShowSuccessMessage] = useState(false)
     const [showErrorMessage, setShowErrorMessage] = useState(false)
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if(e.target.files !== null && e.target.files.length > 0) {
-            setData('fileUpload', e.target.files[0])
+        const files = e.target.files
+        if (files) {
+            setData('fileUpload', files)
         }
     }
 
@@ -54,7 +55,7 @@ export default function ImportPage ({ auth,  }: PageProps) {
                         <label id="file-input-label" htmlFor="file-input" className={'inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'}>
                             File Upload
                         </label>
-                        <input type="file" onChange={handleFileUpload} id={'file-input'} className={'hidden'} required/>
+                        <input type="file" onChange={handleFileUpload} id={'file-input'} className={'hidden'} required multiple/>
 
                         <PrimaryButton
                             className={'p-6 text-gray-900'}
@@ -84,7 +85,7 @@ export default function ImportPage ({ auth,  }: PageProps) {
                         </span>
                     </div>}
                     {data.fileUpload && <div className={'bg-white overflow-hidden shadow-sm sm:rounded-lg p-3 my-3'}>
-                        <div className={'p-6 text-gray-900'}>{data.fileUpload.name}</div>
+                        <div className={'p-6 text-gray-900'}>{data.fileUpload.length} files selected</div>
                     </div>}
                 </form>
             </div>
