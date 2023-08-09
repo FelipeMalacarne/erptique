@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('account_id', 50);
-            $table->string('transaction_type', 10);
+            $table->string('transaction_type', 15);
             $table->dateTime('date_posted');
             $table->decimal('amount', 18, 2);
-            $table->string('FITID', 50);
+            $table->string('FITID', 100);
             $table->string('memo', 255);
             $table->timestamps();
 

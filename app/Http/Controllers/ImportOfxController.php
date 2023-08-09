@@ -21,11 +21,11 @@ class ImportOfxController extends Controller
         try {
             $file = $request->file('fileUpload');
 
-            if($file == null) throw new Exception('No file uploaded');
+            if ($file == null) throw new Exception('No file uploaded');
 
             $extension = $file->getClientOriginalExtension();
 
-            if($extension != 'ofx') throw new Exception('File format not supported');
+            if ($extension != 'ofx') throw new Exception('File format not supported');
 
             $fileString = $file->get();
 
@@ -53,29 +53,25 @@ class ImportOfxController extends Controller
                 }
             }
             // update or create account ledger_balance if balance is newer than the one in the database
-            $previousDate = $bankAccount->ledgerBalance()->value('date_as_of');
+            $bankAccount->updateOrCreate(
+                ['account_id' => $ofx->bankAccounts[0]->accountNumber],
+                ['ledger_balance' => $ofx->bankAccounts[0]->balance]
+            );
 
-            $newDate = $ofx->bankAccounts[0]->balanceDate;
+            
 
-            if($previousDate < $newDate) $bankAccount->ledgerBalance()->updateOrCreate([
-                'date_as_of' => $ofx->bankAccounts[0]->balanceDate,
-                'balance_amount' => $ofx->bankAccounts[0]->balance,
-            ]);
 
             Log::info('OFX file imported successfully.');
 
 
             return redirect()->back()->with('success', 'OFX file imported successfully.');
-
         } catch (Exception $e) {
             Log::error('Error importing OFX file: ' . $e->getMessage());
             return redirect()->back()->withErrors('Error importing OFX file: ' . $e->getMessage());
-
-
         }
     }
 
-    private function getOrCreateBankAccount($ofx)
+    private function getOrCreateBankAccount($ofx) : BankAccount
     {
         return BankAccount::firstOrCreate([
             'account_id' => $ofx->bankAccounts[0]->accountNumber,
@@ -130,6 +126,4 @@ class ImportOfxController extends Controller
         // If no match is found, return the original type
         return $originalType;
     }
-
 }
-
