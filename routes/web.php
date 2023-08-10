@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ImportOfxController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Middleware\PHPIniMiddleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
