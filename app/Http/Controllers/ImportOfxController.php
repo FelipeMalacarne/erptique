@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\BankAccount;
 use App\Models\Transaction;
 use App\Service\OfxService;
-use DateTime;
-use DateTimeZone;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +22,6 @@ class ImportOfxController extends Controller
 
     public function importOfx(Request $request)
     {
-
         try {
             $files = $request->file('fileUpload');
             if (empty($files)) {
