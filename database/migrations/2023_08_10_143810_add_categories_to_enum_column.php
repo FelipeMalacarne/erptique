@@ -12,24 +12,6 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-
-    // ALTER TABLE transactions 
-    // MODIFY category 
-    // ENUM('Transactions',
-    //      'Recurring Bills', 
-    //      'Personnel', 
-    //      'Food', 
-    //      'Supplies', 
-    //      'Credit Card', 
-    //      'Office Equipment', 
-    //      'Construction', 
-    //      'Office Maintenance', 
-    //      'One-off Bills', 
-    //      'Subscriptions income', 
-    //      'Chargeback', 
-    //      'Commission', 
-    //      'Investment Yields', 
-    //      'Accounting')
     {
         DB::statement('
             ALTER TABLE transactions 
@@ -48,7 +30,9 @@ return new class extends Migration
                 "Chargeback", 
                 "Commission", 
                 "Investment Yields", 
-                "Accounting")'
+                "Accounting")
+                NULL DEFAULT NULL  
+                '
             );
     }
 
@@ -73,7 +57,8 @@ return new class extends Migration
                 "One-off Bills", 
                 "Subscriptions income", 
                 "Chargeback", 
-                "Commission")'
+                "Commission")
+                NULL DEFAULT NULL'
             );
     }
 };
