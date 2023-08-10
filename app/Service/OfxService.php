@@ -35,7 +35,14 @@ class OfxService
                 // Convert the transaction type to "credit" or "debit"
                 $standardizedType = $this->getStandardizedTransactionType($transaction->type);
 
-                $existingTransaction = Transaction::where('FITID', $transaction->uniqueId)->first();
+
+                // filter out when transaction already exists comparing date, fitid and account
+                $existingTransaction = Transaction::where('date_posted', $transaction->date)
+                    ->where('FITID', $transaction->uniqueId)
+                    ->where('account_id', $ofx->bankAccounts[0]->accountNumber)
+                    ->first();
+                
+                
                 if (!$existingTransaction) {
                     $bankAccount->transactions()->create([
                         'transaction_type' => $standardizedType,
