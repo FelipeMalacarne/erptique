@@ -52,7 +52,7 @@ export default function ImportPage ({ auth,  }: PageProps) {
                       encType={'multipart/form-data'}
                 >
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-3 my-3 flex gap-4">
-                        <label id="file-input-label" htmlFor="file-input" className={'inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'}>
+                        <label id="file-input-label" htmlFor="file-input" className={'inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-600 focus:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'}>
                             File Upload
                         </label>
                         <input type="file" onChange={handleFileUpload} id={'file-input'} className={'hidden'} required multiple/>
