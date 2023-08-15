@@ -15,11 +15,11 @@ interface ApplicationsPageProps extends PageProps {
 export default function ApplicationsPage(props: ApplicationsPageProps) {
     const { data, setData, post, errors, processing, reset }: any = useForm<{
         account_id: string;
-        amount: number;
+        amount: number | null;
         date: string;
     }>({
         account_id: '',
-        amount: 0,
+        amount: null,
         date: '',
     });
     
@@ -30,16 +30,16 @@ export default function ApplicationsPage(props: ApplicationsPageProps) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
         post('/applications', {
             onSuccess: () => {
                 reset();
                 setShowSuccessMessage(true);
-                setShowErrorMessage(false);
+                setShowErrorMessage(false); 
             },
             onError: () => {
                 setShowErrorMessage(true);
                 setShowSuccessMessage(false);
-
             },
         })
     }
