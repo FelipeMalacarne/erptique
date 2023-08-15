@@ -6,6 +6,7 @@ use App\Models\BankAccount;
 use App\Models\Transaction;
 use App\Service\OfxService;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use OfxParser\Parser;
@@ -20,14 +21,13 @@ class ImportOfxController extends Controller
         $this->ofxService = new OfxService();
     }
 
-    public function importOfx(Request $request)
+    public function importOfx(Request $request): RedirectResponse
     {
         try {
             $files = $request->file('fileUpload');
             if (empty($files)) {
                 throw new Exception('No files uploaded');
             }
-
             $this->ofxService->saveAllTransactions($files);
 
             Log::info('OFX file imported successfully.');

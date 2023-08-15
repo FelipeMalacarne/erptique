@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationsController;
 use App\Http\Controllers\ImportOfxController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\PHPIniMiddleware;
@@ -39,5 +40,7 @@ Route::get('/import-ofx', function () {
 Route::post('/import-ofx', [ImportOfxController::class, 'importOfx'])->name('import.post');
 
 
+Route::get('/applications', [ApplicationsController::class, 'index'])->middleware(['auth', 'verified'])->name('applications');
+Route::post('/applications', [ApplicationsController::class, 'create'])->middleware(['auth', 'verified'])->name('applications.store');
 
 require __DIR__.'/auth.php';

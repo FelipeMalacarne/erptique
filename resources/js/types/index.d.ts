@@ -10,3 +10,21 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
         user: User;
     };
 };
+
+export interface BankAccount {
+    account_id: string;
+    bank_id: string;
+    account_type: string;
+    name?: string | null;
+    created_at: Date;
+    updated_at: Date;
+}
+
+export interface Application {
+    id: number;
+    account_id: string;
+    amount: number;
+    date: Date;
+    created_at: Date;
+    updated_at: Date;
+}
