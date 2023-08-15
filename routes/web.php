@@ -48,8 +48,10 @@ Route::post('/applications', [ApplicationsController::class, 'create'])
     ->middleware(['auth', 'verified'])
     ->name('applications.store');
 
+Route::delete('/applications/{application}', [ApplicationsController::class, 'destroy'])
+    ->middleware(['auth', 'verified'])
+    ->name('applications.destroy');
 
 
 
-    
 require __DIR__.'/auth.php';

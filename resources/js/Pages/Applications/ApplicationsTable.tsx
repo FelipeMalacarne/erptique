@@ -1,7 +1,10 @@
+import Modal from '@/Components/Modal'
 import PrimaryButton from '@/Components/PrimaryButton'
 import { TrashIcon } from '@/svg/TrashIcon'
 import { Application, BankAccount } from '@/types'
-import React from 'react'
+import { router } from '@inertiajs/react'
+import React, { useState } from 'react'
+import { DeleteConfirmationModal } from './DeleteConfirmationModal'
 
 interface ApplicationsTableProps {
     applications: Application[]
@@ -9,21 +12,32 @@ interface ApplicationsTableProps {
 }
 
 export const ApplicationsTable: React.FC<ApplicationsTableProps> = (props) => {
+    const [showModal, setShowModal] = useState(false)
+    const [selectedApplicationId, setSelectedApplicationId] = useState<number | null>(null)
+
+
     return (
         <>
+            {showModal && (
+                <DeleteConfirmationModal
+                    selectedApplicationId={selectedApplicationId}
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                />
+            )}
             <div className="flex flex-col">
                 <div className="overflow-x-auto">
                     <div className="p-1.5 w-full inline-block align-middle">
                         <div className="overflow-hidden rounded-lg"></div>
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className='bg-gray-50'>
-                                <tr>
-                                    <th scope='col' className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase">ID</th>
-                                    <th scope='col' className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase">Account</th>
-                                    <th scope='col' className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase">Amount</th>
-                                    <th scope='col' className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase">Date</th>
-                                    <th scope='col' className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase">Created at</th>
-                                    <th scope='col' className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase">Actions</th>
+                                <tr className='text-xs font-bold text-left text-gray-500 uppercase'>
+                                    <th scope='col' className="px-6 py-3">ID</th>
+                                    <th scope='col' className="px-6 py-3">Account</th>
+                                    <th scope='col' className="px-6 py-3">Amount</th>
+                                    <th scope='col' className="px-6 py-3">Date</th>
+                                    <th scope='col' className="px-6 py-3">Created at</th>
+                                    <th scope='col' className="px-6 py-3">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -39,7 +53,8 @@ export const ApplicationsTable: React.FC<ApplicationsTableProps> = (props) => {
                                         <td className="border px-4 py-2 flex justify-center al">
                                             <PrimaryButton
                                                 onClick={() => {
-                                                    console.log('clicked')
+                                                    setSelectedApplicationId(application.id)
+                                                    setShowModal(true)
                                                 }}
                                             >
                                                 <TrashIcon width={'15'} height={'15'} color={'#fff'} />

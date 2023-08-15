@@ -21,14 +21,25 @@ class ApplicationsController extends Controller
      {
          try{
           $application = new Application();
-
           $application->amount = $request->amount;
           $application->account_id = $request->account_id;
           $application->date = $request->date;
           $application->save();
+          
           return redirect()->back()->with('success', 'Application created successfully');
          } catch (\Exception $e) {
           return redirect()->back()->withErrors('Something went wrong!' . $e->getMessage());
          }     
+     }
+
+     public function destroy($id)
+     {
+          try{
+               $application = Application::find($id);
+               $application->delete();
+               return redirect()->back()->with('success', 'Application deleted successfully');
+          } catch (\Exception $e) {
+               return redirect()->back()->withErrors('Something went wrong!' . $e->getMessage());
+          }     
      }
 } 

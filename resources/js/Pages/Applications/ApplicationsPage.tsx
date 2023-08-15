@@ -93,7 +93,6 @@ export default function ApplicationsPage(props: ApplicationsPageProps) {
                                             }
                                         }}
                                         required
-                                        autoFocus
                                     />
                                     {errors.amount && <p className="mt-2 text-sm text-red-600" id="email-error">{errors.amount}</p>}
                                 </div>
@@ -107,7 +106,7 @@ export default function ApplicationsPage(props: ApplicationsPageProps) {
                                         value={data.date}
                                         onChange={e => setData('date', e.target.value)}
                                         required
-                                        autoFocus
+                        
                                     />
                                     {errors.date && <p className="mt-2 text-sm text-red-600" id="email-error">{errors.date}</p>}
                                 </div>
@@ -124,7 +123,7 @@ export default function ApplicationsPage(props: ApplicationsPageProps) {
                             </form>
                             <div className='mt-4'>  
                                 {showErrorMessage && <Message type={'Error'} txt={errors[0]} onClose={() => setShowErrorMessage(false)} />}
-                                {showSuccessMessage && <Message type={'Success'} txt='Application created!' onClose={() => setShowSuccessMessage(false)} />}
+                                {showSuccessMessage && <Message type={'Success'} txt='Application created' onClose={() => setShowSuccessMessage(false)} />}
                             </div>
                         </div>
 
