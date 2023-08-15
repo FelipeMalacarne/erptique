@@ -40,7 +40,16 @@ Route::get('/import-ofx', function () {
 Route::post('/import-ofx', [ImportOfxController::class, 'importOfx'])->name('import.post');
 
 
-Route::get('/applications', [ApplicationsController::class, 'index'])->middleware(['auth', 'verified'])->name('applications');
-Route::post('/applications', [ApplicationsController::class, 'create'])->middleware(['auth', 'verified'])->name('applications.store');
+Route::get('/applications', [ApplicationsController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('applications');
 
+Route::post('/applications', [ApplicationsController::class, 'create'])
+    ->middleware(['auth', 'verified'])
+    ->name('applications.store');
+
+
+
+
+    
 require __DIR__.'/auth.php';

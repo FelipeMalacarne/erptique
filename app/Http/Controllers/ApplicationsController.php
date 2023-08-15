@@ -10,15 +10,16 @@ use Inertia\Inertia;
 class ApplicationsController extends Controller
 {
      public function index()
-     {
-          return Inertia::render('ApplicationsPage', array(
-               'applications' => Application::all(),
+     {    
+          return Inertia::render('Applications/ApplicationsPage', array(
+               'applications' => Application::orderBy('id', 'desc')->take(20)->get(),
                'bankAccounts' => BankAccount::all()
           ));
      }
 
      public function create(Request $request)
      {
+         try{
           $application = new Application();
 
           $application->amount = $request->amount;
@@ -26,5 +27,8 @@ class ApplicationsController extends Controller
           $application->date = $request->date;
           $application->save();
           return redirect()->back()->with('success', 'Application created successfully');
+         } catch (\Exception $e) {
+          return redirect()->back()->withErrors('Something went wrong!' . $e->getMessage());
+         }     
      }
 } 

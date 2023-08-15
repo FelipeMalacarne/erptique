@@ -24,7 +24,7 @@ export interface Application {
     id: number;
     account_id: string;
     amount: number;
-    date: Date;
+    date: string;
     created_at: Date;
     updated_at: Date;
 }

@@ -67,7 +67,7 @@ export default function ImportPage ({ auth,  }: PageProps) {
 
                     {showErrorMessage && <Message type={'Error'} txt={errors[0]} onClose={() => setShowErrorMessage(false)}/>}
 
-                    {showSuccessMessage && <Message type={'Success'} onClose={() => setShowSuccessMessage(false)}/>}
+                    {showSuccessMessage && <Message type={'Success'} txt="Transactions Imported." onClose={() => setShowSuccessMessage(false)}/>}
 
                     {data.fileUpload && <div className={'bg-white overflow-hidden shadow-sm sm:rounded-lg p-3 my-3'}>
                         <div className={'p-6 text-gray-900'}>{data.fileUpload.length} files selected</div>
