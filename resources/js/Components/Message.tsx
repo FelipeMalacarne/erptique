@@ -9,8 +9,6 @@ interface MessageProps {
 
 export const Message: React.FC<MessageProps> = (props) => {
 
-    console.log(props.type)
-    console.log(props.txt)
     return (
         <div className={
             props.type == 'Success' ? 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative':
@@ -20,7 +18,7 @@ export const Message: React.FC<MessageProps> = (props) => {
                 {props.type + '! '}
             </strong>
             <span className={'block sm:inline'}>
-                {props.txt} {' ' + (props.type == 'Error') ? 'Please try again.' : 'Your file was uploaded successfully.'}
+            {props.txt || (' ' + (props.type == 'Error') ? 'Please try again.' : 'Your file was uploaded successfully.')}
             </span>
             <span className={'absolute top-0 bottom-0 right-0 px-4 py-3'}>
                 <svg className={ 
