@@ -15,15 +15,13 @@ interface ApplicationsPageProps extends PageProps {
 export default function ApplicationsPage(props: ApplicationsPageProps) {
     const { data, setData, post, errors, processing, reset }: any = useForm<{
         account_id: string;
-        amount: number | null;
+        amount: number | '';
         date: string;
     }>({
         account_id: '',
-        amount: null,
+        amount: '',
         date: '',
     });
-    
-    console.log(props)
 
     const [showErrorMessage, setShowErrorMessage] = useState(false)
     const [showSuccessMessage, setShowSuccessMessage] = useState(false)
