@@ -87,11 +87,7 @@ export default function ApplicationsPage(props: ApplicationsPageProps) {
                                         type="number"
                                         className="form-input rounded-md shadow-sm mt-1 block w-full"
                                         value={data.amount}
-                                        onChange={e => {
-                                            if (!isNaN(Number(e.target.value))) {
-                                                setData('amount', Number(e.target.value))
-                                            }
-                                        }}
+                                        onChange={e => setData('amount', e.target.value)}
                                         required
                                     />
                                     {errors.amount && <p className="mt-2 text-sm text-red-600" id="email-error">{errors.amount}</p>}
